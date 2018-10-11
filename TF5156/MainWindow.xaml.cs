@@ -37,19 +37,23 @@ namespace TF5156
             var factory = new MqttFactory();
             mqttClient = factory.CreateMqttClient();
 
-            mqttClient.Connected += async (s, ev) => {
+            mqttClient.Connected += (s, ev) => {
                 Console.WriteLine("### CONNECTED WITH SERVER ###");
                 PrintLog("连接成功!");
                 ConnectBtn.Dispatcher.Invoke(new Action(() => {
                     SubscribeBtn.IsEnabled = true;
                     FireBtn.IsEnabled = true;
+                    SubscribeTF5156Btn.IsEnabled = true;
+                    SubscribeLoraBtn.IsEnabled = true;
                     ConnectBtn.Content = "已连接";
                 }));
             };
 
-            mqttClient.Disconnected += async (s, ev) => {
+            mqttClient.Disconnected += (s, ev) => {
                 ConnectBtn.Dispatcher.Invoke(new Action(() => {
                     SubscribeBtn.IsEnabled = false;
+                    SubscribeTF5156Btn.IsEnabled = false;
+                    SubscribeLoraBtn.IsEnabled = false;
                     FireBtn.IsEnabled = false;
                     ConnectBtn.Content = "连接";
                 }));
@@ -137,6 +141,26 @@ namespace TF5156
             PrintLog("成功连接到:" + InputServerName.Text);
         }
 
+        private async void Button_Subscribe_TF5156_Click(object sender, RoutedEventArgs e)
+        {
+            var topic = "tamefire/tf5156/send/#";
+            PrintLog("开始订阅所有5156数据");
+            // Subscribe to a topic
+            await mqttClient.SubscribeAsync(new TopicFilterBuilder().WithTopic(topic).Build());
+            PrintLog("订阅主题" + topic + "成功!");
+            Console.WriteLine("### SUBSCRIBED ###");
+        }
+
+        private async void Button_Subscribe_Lora_Click(object sender, RoutedEventArgs e)
+        {
+            var topic = "tamefire/lora/send/#";
+            PrintLog("开始订阅所有Lora数据");
+            // Subscribe to a topic
+            await mqttClient.SubscribeAsync(new TopicFilterBuilder().WithTopic(topic).Build());
+            PrintLog("订阅主题" + topic + "成功!");
+            Console.WriteLine("### SUBSCRIBED ###");
+        }
+
         private async void Button_Subscribe_Click(object sender, RoutedEventArgs e) {
             var topic = InputSubscribeTopic.Text;
             if (topic.Length > 0) {
@@ -182,5 +206,7 @@ namespace TF5156
                 Console.WriteLine("### PUBLISHED ###");
             }
         }
+
+        
     }
 }

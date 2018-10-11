@@ -38,7 +38,9 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,0,0.2,0">
-                        <Label Content="主题:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Button x:Name ="SubscribeTF5156Btn"  Width="80" IsEnabled="False" Content="订阅所有5156" VerticalAlignment="Center" Margin="6,0" Click="Button_Subscribe_TF5156_Click"/>
+                        <Button x:Name ="SubscribeLoraBtn"  Width="80" IsEnabled="False" Content="订阅所有Lora" VerticalAlignment="Center" Margin="6,0" Click="Button_Subscribe_Lora_Click"/>
+                        <Label Content="自定义主题:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <TextBox x:Name="InputSubscribeTopic" Text="tamefire/tf5156/send/#" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <Button x:Name ="SubscribeBtn"  Width="40" IsEnabled="False" Content="订阅" VerticalAlignment="Center" Margin="6,0" Click="Button_Subscribe_Click"/>
                     </StackPanel>
