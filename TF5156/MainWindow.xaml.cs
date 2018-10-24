@@ -43,7 +43,9 @@ namespace TF5156
                 ConnectBtn.Dispatcher.Invoke(new Action(() => {
                     SubscribeBtn.IsEnabled = true;
                     FireBtn.IsEnabled = true;
+                    FaultBtn.IsEnabled = true;
                     SubscribeTF5156Btn.IsEnabled = true;
+                    OfflineBtn.IsEnabled = true;
                     SubscribeLoraBtn.IsEnabled = true;
                     ConnectBtn.Content = "已连接";
                 }));
@@ -55,6 +57,8 @@ namespace TF5156
                     SubscribeTF5156Btn.IsEnabled = false;
                     SubscribeLoraBtn.IsEnabled = false;
                     FireBtn.IsEnabled = false;
+                    OfflineBtn.IsEnabled = false;
+                    FaultBtn.IsEnabled = false;
                     ConnectBtn.Content = "连接";
                 }));
                 PrintLog("已断开连接");
@@ -193,6 +197,10 @@ namespace TF5156
                         //------------------结束数据-------------------------------------------
                         0x00, 0x23, 0x23//检验(1),##(2)
                 };
+                if ("故障".Equals(btn.Content)) {
+                    payload[36] = 0x00;
+                    payload[37] = 0x01;
+                }
                 PrintLog("开始发送"+ btn.Content + "到:" + topic);
                 MqttApplicationMessage msg = new MqttApplicationMessageBuilder()
                     .WithTopic(topic)
@@ -207,6 +215,25 @@ namespace TF5156
             }
         }
 
-        
+        private async void Button_Offline_Click(object sender, RoutedEventArgs e)
+        {
+            var topic = InputPublishTopic.Text;
+            if (topic.Length > 0)
+            {
+                var deviceId =topic.Substring(topic.LastIndexOf("/"));
+                topic = "tamefire/tf5156/offline" + deviceId;
+                PrintLog("开始发送离线到:" + topic);
+                MqttApplicationMessage msg = new MqttApplicationMessageBuilder()
+                    .WithTopic(topic)
+                    .WithPayload(new byte[] { })
+                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce)
+                    .WithRetainFlag(false)
+                    .Build();
+
+                await mqttClient.PublishAsync(msg);
+                PrintLog("发送离线成功!");
+                Console.WriteLine("### PUBLISHED ###");
+            }
+        }
     }
 }

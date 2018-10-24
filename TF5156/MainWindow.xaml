@@ -62,6 +62,8 @@
                         <Label Content="主题:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <TextBox x:Name="InputPublishTopic" Text="tamefire/tf5156/send/TF0001" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <Button x:Name ="FireBtn"  Width="40" IsEnabled="False" Content="火警" VerticalAlignment="Bottom" Margin="6,0,6,6" Click="Button_Alert_Click"/>
+                        <Button x:Name ="FaultBtn"  Width="40" IsEnabled="False" Content="故障" VerticalAlignment="Bottom" Margin="6,0,6,6" Click="Button_Alert_Click"/>
+                        <Button x:Name ="OfflineBtn"  Width="40" IsEnabled="False" Content="离线" VerticalAlignment="Bottom" Margin="6,0,6,6" Click="Button_Offline_Click"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
