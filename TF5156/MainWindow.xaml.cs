@@ -2,20 +2,10 @@
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace TF5156
 {
@@ -93,6 +83,7 @@ namespace TF5156
         private void PrintLog(string message) {
             LogTextBlock.Dispatcher.Invoke(new Action(() => {
                 LogTextBlock.Text += (System.DateTime.Now + " " + message + "\n");
+                LogTextBlock.ScrollToEnd();
             }));
         }
 
@@ -133,12 +124,17 @@ namespace TF5156
                 port = int.Parse(portText);
             }
 
+            var willMessage = new MqttApplicationMessage();
+            willMessage.Topic = "tamefire/tf5156/offline/TF0001";
+            willMessage.Payload = new byte[] { 0x01 };
+
             // Create TCP based options using the builder.
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("tf5156" + System.DateTime.Now)
                 .WithTcpServer(InputServerName.Text)
                 .WithCredentials(InputUsername.Text, InputPassword.Text)
                 .WithCleanSession()
+                .WithWillMessage(willMessage)
                 .Build();
             PrintLog("开始连接:" + InputServerName.Text);
             await  mqttClient.ConnectAsync(options);
@@ -198,14 +194,14 @@ namespace TF5156
                         0x00, 0x23, 0x23//检验(1),##(2)
                 };
                 if ("故障".Equals(btn.Content)) {
-                    payload[36] = 0x00;
-                    payload[37] = 0x01;
+                    payload[36] = 0x04;
+                    payload[37] = 0x00;
                 }
                 PrintLog("开始发送"+ btn.Content + "到:" + topic);
                 MqttApplicationMessage msg = new MqttApplicationMessageBuilder()
                     .WithTopic(topic)
                     .WithPayload(payload)
-                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce)
+                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
                     .WithRetainFlag(false)
                     .Build();
 
@@ -234,6 +230,11 @@ namespace TF5156
                 PrintLog("发送离线成功!");
                 Console.WriteLine("### PUBLISHED ###");
             }
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            LogTextBlock.Clear();
         }
     }
 }

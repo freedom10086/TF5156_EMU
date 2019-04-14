@@ -43,6 +43,7 @@
                         <Label Content="自定义主题:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <TextBox x:Name="InputSubscribeTopic" Text="tamefire/tf5156/send/#" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <Button x:Name ="SubscribeBtn"  Width="40" IsEnabled="False" Content="订阅" VerticalAlignment="Center" Margin="6,0" Click="Button_Subscribe_Click"/>
+                        
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -68,6 +69,14 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox x:Name="LogTextBlock" Grid.Row="2" Background="Transparent" BorderThickness="0" IsReadOnly="True" TextWrapping="Wrap"/>
+        <TextBox x:Name="LogTextBlock" Grid.Row="2" Background="Transparent" BorderThickness="0" IsReadOnly="True" TextWrapping="Wrap">
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="清空日志" Name="clear" Click="Clear_Click"/>
+
+
+                </ContextMenu>
+            </TextBox.ContextMenu>
+        </TextBox>
     </Grid>
 </Window>
